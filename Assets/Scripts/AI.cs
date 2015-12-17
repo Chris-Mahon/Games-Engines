@@ -18,15 +18,17 @@ public class AI : MonoBehaviour
 	private GameObject recentBullet;
 	private GameObject player;
 	private Projectile projectile;
+	private float sideDirection;
 	[HideInInspector] public Rigidbody2D rb2d;
 
 	// Use this for initialization
 	void Start () 
 	{
 		currTime = 0;
-		direction = -1;
+		direction = 0;
 		isJumping = false;
-		isGrounded = false;
+		isWaiting = true;
+		isGrounded = true;
 		rb2d = GetComponent<Rigidbody2D>();
 		player = GameObject.FindGameObjectWithTag ("Player");
 		gameObject.name = "Enemy";
@@ -35,15 +37,9 @@ public class AI : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-		if (player.transform.position.x - transform.position.y > 0) {
-			facingRight = true;
-			transform.Rotate(new Vector3(0, 1, 0), -180);
-		} 
-		else 
-		{
-			facingRight = false;
-			transform.Rotate(new Vector3(0, 1, 0), 180);
-		}
+		sideDirection = player.transform.position.x - transform.position.x;
+		Flip ();
+		//Debug.Log (transform.rotation);
 
 		if (isJumping != true && isWaiting != true && isGrounded) 
 		{
@@ -53,9 +49,8 @@ public class AI : MonoBehaviour
 			direction = 1;
 		}
 
-		if (isJumping == true) 
-		{
-			currJumpTime += 1*Time.deltaTime;
+		if (isJumping == true) {
+			currJumpTime += 1 * Time.deltaTime;
 		}
 
 		if (isWaiting == true) 
@@ -72,7 +67,7 @@ public class AI : MonoBehaviour
 
 		if (currJumpTime >= jumpingTime) 
 		{
-			//Debug.Log(transform.position + " " + direction + " ");
+			Debug.Log(transform.position + " " + direction + " ");
 			direction = -1;	
 			currJumpTime = 0;
 			isJumping = false;
@@ -87,24 +82,40 @@ public class AI : MonoBehaviour
 
 	void OnCollisionEnter2D(Collision2D other)
 	{
-		if (other.gameObject.name == "Block(Clone)") 
+		Debug.Log (other.gameObject.name);
+		if (other.gameObject.name == "Block") 
 		{
 			direction = 0;
 			currJumpTime = 0;
-			currTime = 0;
-			isJumping = false;			
+			currTime = 0;			
 			isGrounded = true;
-
 		} 
 		else if (other.gameObject.name == "Projectile(Clone)") 
 		{
 			if (other.gameObject.GetComponent<Projectile>().source == "Player")
 			{
 				Destroy(other.gameObject, 0f);
-				Instantiate(GameObject.FindGameObjectWithTag("Enemy"), new Vector2(-2, 3f), Quaternion.identity);
 				Destroy(gameObject, 0f);
 			}
 		}
+	}
+
+	void Flip()
+	{
+		if (sideDirection < 0 && facingRight == true) 
+		{
+			facingRight = !facingRight;
+			transform.Rotate(new Vector3(0, 1, 0), -180);
+		} 
+		else if (sideDirection >0 && facingRight == false)
+		{
+			facingRight = true;
+			transform.Rotate(new Vector3(0, 1, 0),  180);
+		}
+		if (sideDirection <0 && !facingRight)
+		{
+			sideDirection *= -1;
+		}		
 	}
 
 	void OnGUI()

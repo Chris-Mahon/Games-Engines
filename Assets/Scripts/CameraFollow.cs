@@ -4,6 +4,8 @@ using System.Collections;
 public class CameraFollow : MonoBehaviour {
 	[HideInInspector] private GameObject player;
 	[HideInInspector] public bool isLoading = true;
+	private float currX = 0;
+	private float currY = 0;
 	public bool debugging = false;
 	// Use this for initialization
 	void Start() 
@@ -16,10 +18,28 @@ public class CameraFollow : MonoBehaviour {
 	{
 		if (player == null) 
 		{
-			GameObject[] temp = GameObject.FindGameObjectsWithTag ("Player");
-			player = temp [0];
+			player = GameObject.FindGameObjectWithTag("Player");
+			Debug.Log(player.name);
 		}
-		transform.position = new Vector3 (player.transform.position.x, player.transform.position.y + 1, transform.position.z);
+		if (player.transform.position.x < -.1f) 
+		{
+			currX = transform.position.x;
+		} 
+		else 
+		{
+			currX = player.transform.position.x;
+		}
+
+		if (player.transform.position.y < .5f)
+		{
+			currY = transform.position.y;
+		}
+		else 
+		{
+			currY = player.transform.position.y;
+		}
+
+		transform.position = new Vector3(currX, currY, transform.position.z);
 	}
 
 	public void finishLoading()

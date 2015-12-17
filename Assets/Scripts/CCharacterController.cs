@@ -14,6 +14,7 @@ public class CCharacterController : MonoBehaviour
 	public float reloadTime = .5f;
 	public float knockbackTime = .5f;
 	public float movementFactor = 4;
+	[HideInInspector] public bool isFinished;
 	private float currJumpTime;
 	private float currReloadTime;
 	private float currKnocked;
@@ -26,16 +27,11 @@ public class CCharacterController : MonoBehaviour
 	private Projectile projectile;
 	private int direction = 1;
 	private int collisionCount = 0;
-	private float distanceAmount = 0;
-	private float upAmount = 0;
 
 	// Use this for initialization
 	void Start () 
 	{
-		upDirection = -1;
-		isJumping = false;
-		isGrounded = false;
-		Flip ();
+		ResetValues();
 	}
 	
 	// Update is called once per frame
@@ -45,20 +41,21 @@ public class CCharacterController : MonoBehaviour
 		{
 			Application.Quit ();
 		} 
-		if (transform.position.y < -4) 
+		if (transform.position.y < -2) 
 		{
-			transform.position = new Vector2 (-1f, -1f);
+			health = 0;
 		}
 
 
 		upDirection = Input.GetAxis ("Jump");
 		sideDirection = Input.GetAxis ("Horizontal");
-		
-		Flip();
 
-		
-		if (currKnocked > knockbackTime) 
+		if (!isKnockedBack)
 		{
+			Flip();
+		}
+		
+		if (currKnocked > knockbackTime) {
 			isKnockedBack = false;
 			currKnocked = 0;
 		}
@@ -110,6 +107,7 @@ public class CCharacterController : MonoBehaviour
 			sideDirection /= 2;
 		}
 
+
 		if (isReloading) 
 		{
 			currReloadTime += 1*Time.deltaTime;
@@ -141,7 +139,7 @@ public class CCharacterController : MonoBehaviour
 			collisionCount++;
 		}
 
-		if (other.gameObject.name == "Block(Clone)") 
+		if (other.gameObject.name == "Block") 
 		{
 			upDirection = 0;
 			currJumpTime = 0;
@@ -159,6 +157,10 @@ public class CCharacterController : MonoBehaviour
 				health--;
 			}
 		}
+		if (other.gameObject.name == "EndGoal") 
+		{
+			isFinished = true;
+		}
 	}
 
 	void OnCollisionExit2D(Collision2D other)
@@ -171,9 +173,9 @@ public class CCharacterController : MonoBehaviour
 
 	void OnGUI()
 	{
+		GUI.color = Color.black;
 		if (debugging) 
 		{
-			GUI.color = Color.black;
 			GUI.Label (new Rect (10, 10, 200, 20), "isGrounded: " + isGrounded);
 			GUI.Label (new Rect (10, 20, 200, 30), "isJumping: " + isJumping);
 			GUI.Label (new Rect (10, 30, 200, 40), "isReloading: " + isReloading);
@@ -184,9 +186,18 @@ public class CCharacterController : MonoBehaviour
 			GUI.Label (new Rect (10, 80, 200, 90), "CollisionCount: " + collisionCount);
 			GUI.Label (new Rect (10, 90, 200, 100), "isKnockedBack: " + isKnockedBack);
 			GUI.Label (new Rect (10, 100, 200, 110), "currKnocked:" + currKnocked);
-			GUI.Label (new Rect (500, 10, 700, 20), "Health: " + health);
 
 		}
+		GUI.Label (new Rect (500, 10, 700, 20), "Health: " + health);
+	}
+	public void ResetValues()
+	{
+		upDirection = -1;
+		collisionCount = 0;
+		isJumping = false;
+		isGrounded = false;
+		isFinished = false;
+		Flip ();
 	}
 
 	void Flip()
@@ -212,8 +223,6 @@ public class CCharacterController : MonoBehaviour
 		if (sideDirection <0 && !facingRight && !isKnockedBack)
 		{
 			sideDirection *= -1;
-		}
-
-		
+		}		
 	}
 }

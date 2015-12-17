@@ -29,7 +29,8 @@ public class Projectile : MonoBehaviour
 	}
 	void OnCollisionEnter2D(Collision2D other)
 	{
-		if (other.gameObject.name == "Block(Clone)") {
+		if (other.gameObject.name == "Block") 
+		{
 			Destroy (gameObject, 0f);
 			
 		}
