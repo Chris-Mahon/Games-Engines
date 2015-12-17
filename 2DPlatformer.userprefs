@@ -1,12 +1,13 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Universe.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\CCharacterController.cs">
     <Files>
-      <File FileName="Assets\Scripts\Universe.cs" Line="64" Column="25" />
+      <File FileName="Assets\Scripts\Collision.cs" Line="11" Column="4" />
+      <File FileName="Assets\Scripts\Universe.cs" Line="41" Column="4" />
       <File FileName="Assets\Scripts\CameraFollow.cs" Line="24" Column="41" />
-      <File FileName="Assets\Scripts\CCharacterController.cs" Line="175" Column="3" />
-      <File FileName="Assets\Scripts\AI.cs" Line="105" Column="3" />
-      <File FileName="Assets\Scripts\Projectile.cs" Line="27" Column="28" />
+      <File FileName="Assets\Scripts\CCharacterController.cs" Line="149" Column="3" />
+      <File FileName="Assets\Scripts\AI.cs" Line="104" Column="3" />
+      <File FileName="Assets\Scripts\Projectile.cs" Line="25" Column="55" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

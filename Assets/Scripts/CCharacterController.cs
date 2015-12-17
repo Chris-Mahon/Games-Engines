@@ -12,16 +12,19 @@ public class CCharacterController : MonoBehaviour
 	public GameObject Bullet;
 	public float jumpingTime= .5f;
 	public float reloadTime = .5f;
+	public float invincTime = .2f;
 	public float knockbackTime = .5f;
 	public float movementFactor = 4;
 	[HideInInspector] public bool isFinished;
 	private float currJumpTime;
 	private float currReloadTime;
 	private float currKnocked;
+	private float currInvincTime;
 	private bool isReloading;
 	private bool isJumping;
 	private bool isKnockedBack;
 	private bool isGrounded;
+	private bool isInvincible;
 	private float sideDirection;
 	private GameObject recentBullet;
 	private Projectile projectile;
@@ -35,7 +38,7 @@ public class CCharacterController : MonoBehaviour
 	}
 	
 	// Update is called once per frame
-	void FixedUpdate () 
+	void Update () 
 	{
 		if (Input.GetKeyDown (KeyCode.Escape)) 
 		{
@@ -45,7 +48,6 @@ public class CCharacterController : MonoBehaviour
 		{
 			health = 0;
 		}
-
 
 		upDirection = Input.GetAxis ("Jump");
 		sideDirection = Input.GetAxis ("Horizontal");
@@ -107,10 +109,15 @@ public class CCharacterController : MonoBehaviour
 			sideDirection /= 2;
 		}
 
-
 		if (isReloading) 
 		{
 			currReloadTime += 1*Time.deltaTime;
+		}
+
+		if (currInvincTime > invincTime) 
+		{
+			currInvincTime = 0;
+			isInvincible = false;
 		}
 		if (currReloadTime > reloadTime) 
 		{
@@ -118,8 +125,15 @@ public class CCharacterController : MonoBehaviour
 			currReloadTime = 0;
 		}
 
-		transform.Translate ((Vector2.up * upDirection * Time.deltaTime * jSpeed)
-				+ (Vector2.right * sideDirection * Time.deltaTime * sSpeed), Space.Self);
+		if (isInvincible) 
+		{
+			currInvincTime += 1 * Time.deltaTime;
+			gameObject.transform.GetComponent<SpriteRenderer> ().color = new Color(1, 1, 1, .5f);
+		} 
+		else 
+		{
+			gameObject.transform.GetComponent<SpriteRenderer> ().color = new Color(1, 1, 1, 1);
+		}
 
 		if (Input.GetAxis("Fire1")>0 && !isReloading) 
 		{
@@ -128,7 +142,15 @@ public class CCharacterController : MonoBehaviour
 			projectile.Init(facingRight, "Player");
 			isReloading  = true;
 		}
-	
+
+	}
+
+	void FixedUpdate()
+	{
+		transform.Translate ((Vector2.up * upDirection * Time.deltaTime * jSpeed)
+		                     + (Vector2.right * sideDirection * Time.deltaTime * sSpeed), Space.Self);
+
+
 	}
 	
 	void OnCollisionEnter2D(Collision2D other)
@@ -144,22 +166,47 @@ public class CCharacterController : MonoBehaviour
 			upDirection = 0;
 			currJumpTime = 0;
 		} 
+		else if (other.gameObject.name == "Obstacle") 
+		{
+			if (!isInvincible)
+			{
+				upDirection = 0;
+				currJumpTime = 0;
+				health--;
+				isInvincible = true;
+			}
+		} 
 		else if (other.gameObject.name == "Enemy") 
 		{
-			isKnockedBack = true;
-			health--;
+			if (!isInvincible)
+			{
+				isKnockedBack = true;
+				health--;
+				isInvincible = true;
+			}
 		}
 		if (other.gameObject.name == "Projectile(Clone)") 
 		{
 			if (other.gameObject.GetComponent<Projectile>().source == "Enemy")
 			{
 				Destroy(other.gameObject, 0f);
+			}
+			if (!isInvincible && other.gameObject.GetComponent<Projectile>().source == "Enemy")
+			{
+				isKnockedBack = true;
 				health--;
+				isInvincible = true;
 			}
 		}
 		if (other.gameObject.name == "EndGoal") 
 		{
 			isFinished = true;
+			health+=2;
+		}
+		if (other.gameObject.name == "HealthUp")
+		{
+			Destroy(other.gameObject, 0f);
+			health+=2;
 		}
 	}
 

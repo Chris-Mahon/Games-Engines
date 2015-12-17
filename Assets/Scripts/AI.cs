@@ -72,9 +72,12 @@ public class AI : MonoBehaviour
 			currJumpTime = 0;
 			isJumping = false;
 
-			recentBullet = Instantiate(Bullet, transform.position, transform.rotation) as GameObject;
-			projectile = recentBullet.GetComponent<Projectile>();
-			projectile.Init(facingRight, "Enemy");
+			if(Vector2.Distance(player.transform.position, transform.position)<5)
+			{
+				recentBullet = Instantiate(Bullet, transform.position, transform.rotation) as GameObject;
+				projectile = recentBullet.GetComponent<Projectile>();
+				projectile.Init(facingRight, "Enemy");
+			}
 
 		}
 		transform.Translate(Vector2.up * direction * Time.deltaTime * jSpeed);
@@ -98,6 +101,7 @@ public class AI : MonoBehaviour
 				Destroy(gameObject, 0f);
 			}
 		}
+
 	}
 
 	void Flip()

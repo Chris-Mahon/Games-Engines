@@ -22,7 +22,7 @@ public class Projectile : MonoBehaviour
 	{
 		transform.Translate(Vector2.right * direction * Time.deltaTime);
 
-		if (Vector2.Distance(start, transform.position) > 6) 
+		if (Vector2.Distance(start, transform.position) > 12) 
 		{
 			Destroy(gameObject, 0f);
 		}
