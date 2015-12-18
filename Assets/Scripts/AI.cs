@@ -28,7 +28,6 @@ public class AI : BaseMovement
 	{
 		sideDirection = player.transform.position.x - transform.position.x;
 		Flip ();
-		//Debug.Log (transform.rotation);
 
 		if (isJumping != true && isWaiting != true && isGrounded) 
 		{
@@ -49,14 +48,12 @@ public class AI : BaseMovement
 
 		if (currTime >=waitTime)
 		{
-			Debug.Log("Reset!");
 			currTime = 0;
 			isWaiting = false;
 		}
 
 		if (currJumpTime >= jumpingTime) 
 		{
-			Debug.Log(transform.position + " " + direction + " ");
 			upDirection = -1;	
 			currJumpTime = 0;
 			isJumping = false;
@@ -72,7 +69,6 @@ public class AI : BaseMovement
 
 	void OnCollisionEnter2D(Collision2D other)
 	{
-		Debug.Log (other.gameObject.name);
 		if (other.gameObject.name == "Block") 
 		{
 			upDirection = 0;

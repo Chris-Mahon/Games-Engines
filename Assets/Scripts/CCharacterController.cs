@@ -20,6 +20,7 @@ public class CCharacterController : BaseMovement
 	// Use this for initialization
 	void Start () 
 	{
+		health = 6;
 		ResetValues();
 	}
 	
@@ -139,19 +140,20 @@ public class CCharacterController : BaseMovement
 	
 	void OnCollisionEnter2D(Collision2D other)
 	{
-		Debug.Log(other.gameObject.name);
-		if (other.gameObject.name != "Projectile(Clone)" && other.gameObject.name != "Enemy" && other.gameObject.name != "HealthUp") 
+		if (other.gameObject.name != "Projectile" && other.gameObject.name != "Enemy" && other.gameObject.name != "HealthUp") 
 		{
-			collisionCount++;
+
 		}
 
 		if (other.gameObject.name == "Block") 
 		{
 			upDirection = 0;
 			currJumpTime = 0;
+			collisionCount++;
 		} 
 		else if (other.gameObject.name == "Obstacle") 
 		{
+			collisionCount++;
 			if (!isInvincible)
 			{
 				upDirection = 0;
@@ -169,7 +171,7 @@ public class CCharacterController : BaseMovement
 				isInvincible = true;
 			}
 		}
-		if (other.gameObject.name == "Projectile(Clone)") 
+		if (other.gameObject.tag == "Projectile") 
 		{
 			if (other.gameObject.GetComponent<Projectile>().source == "Enemy")
 			{
@@ -196,7 +198,11 @@ public class CCharacterController : BaseMovement
 
 	void OnCollisionExit2D(Collision2D other)
 	{
-		if (other.gameObject.name != "Projectile(Clone)" && other.gameObject.name != "Enemy") 
+		if (other.gameObject.name == "Block") 
+		{
+			collisionCount--;
+		} 
+		else if (other.gameObject.name == "Obstacle") 
 		{
 			collisionCount--;
 		}
@@ -225,7 +231,6 @@ public class CCharacterController : BaseMovement
 	{
 		upDirection = -1;
 		collisionCount = 0;
-		health = 6;
 		isJumping = false;
 		isGrounded = false;
 		isFinished = false;

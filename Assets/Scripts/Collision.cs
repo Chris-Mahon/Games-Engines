@@ -6,9 +6,9 @@ public class Collision : MonoBehaviour {
 	// Use this for initialization
 	void OnCollisionEnter2D(Collision2D other)
 	{
-		if (other.gameObject.name == "Enemy" || other.gameObject.name == "GigaGuy")
+		if (other.gameObject.tag == "Enemy" || other.gameObject.tag == "Player")
 		{
-			gameObject.GetComponent<SpriteRenderer> ().sprite = collidedSpike;
+			gameObject.GetComponent<SpriteRenderer>().sprite = collidedSpike;
 		}
 	}
 }

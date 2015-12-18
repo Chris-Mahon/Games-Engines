@@ -10,14 +10,12 @@ public class Universe : MonoBehaviour
 	private GameObject player;
 	private Vector2 startPos;
 	private Vector2 checkpoint;
-	private bool isLoading = true;
 	private int level = 1;
 
 	// Use this for initialization
 	void Start () 
 	{
 		level = 1;
-
 		player = Instantiate (PlayerObject, new Vector2(0.5f, 0.5f), Quaternion.identity) as GameObject;
 		startPos = player.transform.position;
 		
@@ -30,10 +28,9 @@ public class Universe : MonoBehaviour
 	{
 		//isLoading = gameObject.GetComponent<SpawnPlatforms> ().isLoading;
 		//player = gameObject.GetComponent<SpawnPlatforms>().playerObject;
-		Debug.Log(Quaternion.identity);
+
 		if (player.GetComponent<CCharacterController>().health < 1) 
 		{
-			Debug.Log ("Dead");
 			player.transform.position = startPos;
 			player.GetComponent<CCharacterController>().health = 6;
 		}
