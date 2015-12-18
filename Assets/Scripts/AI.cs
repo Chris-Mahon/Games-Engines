@@ -1,35 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class AI : MonoBehaviour 
+public class AI : BaseMovement
 {
 	public float waitTime=3;
-	public bool facingRight = false;
 	public float jSpeed = 2f;
-	private float currTime;
-	private float currJumpTime;
-	public float jumpingTime=2;
-	private bool isJumping;
+	public float jumpOffset = 0;
 	private bool isWaiting;
-	private bool isGrounded;
-	public bool debugging = false;
-	private int direction;
-	public GameObject Bullet;
-	private GameObject recentBullet;
 	private GameObject player;
-	private Projectile projectile;
-	private float sideDirection;
 	[HideInInspector] public Rigidbody2D rb2d;
 
 	// Use this for initialization
 	void Start () 
 	{
-		currTime = 0;
-		direction = 0;
+		currTime = 0+jumpOffset;
+		upDirection = 0;
+		health = 1;
 		isJumping = false;
 		isWaiting = true;
 		isGrounded = true;
-		rb2d = GetComponent<Rigidbody2D>();
 		player = GameObject.FindGameObjectWithTag ("Player");
 		gameObject.name = "Enemy";
 	}
@@ -46,7 +35,7 @@ public class AI : MonoBehaviour
 			isGrounded = false;
 			isJumping = true;
 			isWaiting = true;
-			direction = 1;
+			upDirection = 1;
 		}
 
 		if (isJumping == true) {
@@ -68,19 +57,17 @@ public class AI : MonoBehaviour
 		if (currJumpTime >= jumpingTime) 
 		{
 			Debug.Log(transform.position + " " + direction + " ");
-			direction = -1;	
+			upDirection = -1;	
 			currJumpTime = 0;
 			isJumping = false;
 
 			if(Vector2.Distance(player.transform.position, transform.position)<5)
 			{
-				recentBullet = Instantiate(Bullet, transform.position, transform.rotation) as GameObject;
-				projectile = recentBullet.GetComponent<Projectile>();
-				projectile.Init(facingRight, "Enemy");
+				shootProjectile("Enemy");
 			}
 
 		}
-		transform.Translate(Vector2.up * direction * Time.deltaTime * jSpeed);
+		transform.Translate(Vector2.up * upDirection * Time.deltaTime * jSpeed);
 	}
 
 	void OnCollisionEnter2D(Collision2D other)
@@ -88,7 +75,7 @@ public class AI : MonoBehaviour
 		Debug.Log (other.gameObject.name);
 		if (other.gameObject.name == "Block") 
 		{
-			direction = 0;
+			upDirection = 0;
 			currJumpTime = 0;
 			currTime = 0;			
 			isGrounded = true;
@@ -102,24 +89,6 @@ public class AI : MonoBehaviour
 			}
 		}
 
-	}
-
-	void Flip()
-	{
-		if (sideDirection < 0 && facingRight == true) 
-		{
-			facingRight = !facingRight;
-			transform.Rotate(new Vector3(0, 1, 0), -180);
-		} 
-		else if (sideDirection >0 && facingRight == false)
-		{
-			facingRight = true;
-			transform.Rotate(new Vector3(0, 1, 0),  180);
-		}
-		if (sideDirection <0 && !facingRight)
-		{
-			sideDirection *= -1;
-		}		
 	}
 
 	void OnGUI()

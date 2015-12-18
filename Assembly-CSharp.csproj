@@ -46,12 +46,12 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\AI.cs" />
+     <Compile Include="Assets\Scripts\BaseMovement.cs" />
      <Compile Include="Assets\Scripts\CCharacterController.cs" />
      <Compile Include="Assets\Scripts\CameraFollow.cs" />
      <Compile Include="Assets\Scripts\Collision.cs" />
      <Compile Include="Assets\Scripts\CustomCharacterController.cs" />
      <Compile Include="Assets\Scripts\File.cs" />
-     <Compile Include="Assets\Scripts\Movement.cs" />
      <Compile Include="Assets\Scripts\Projectile.cs" />
      <Compile Include="Assets\Scripts\SpawnPlatforms.cs" />
      <Compile Include="Assets\Scripts\Universe.cs" />

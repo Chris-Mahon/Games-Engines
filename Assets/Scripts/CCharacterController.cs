@@ -1,34 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CCharacterController : MonoBehaviour 
+public class CCharacterController : BaseMovement 
 {
-	public bool facingRight = true;
-	public bool debugging = false;
 	public float jSpeed = 2f;
 	public float sSpeed = 2f;
-	public float upDirection;
-	public int health = 6;
-	public GameObject Bullet;
-	public float jumpingTime= .5f;
 	public float reloadTime = .5f;
 	public float invincTime = .2f;
 	public float knockbackTime = .5f;
 	public float movementFactor = 4;
 	[HideInInspector] public bool isFinished;
-	private float currJumpTime;
 	private float currReloadTime;
 	private float currKnocked;
 	private float currInvincTime;
 	private bool isReloading;
-	private bool isJumping;
-	private bool isKnockedBack;
-	private bool isGrounded;
 	private bool isInvincible;
-	private float sideDirection;
-	private GameObject recentBullet;
-	private Projectile projectile;
-	private int direction = 1;
 	private int collisionCount = 0;
 
 	// Use this for initialization
@@ -137,9 +123,7 @@ public class CCharacterController : MonoBehaviour
 
 		if (Input.GetAxis("Fire1")>0 && !isReloading) 
 		{
-			recentBullet = Instantiate(Bullet, transform.position +(Vector3.right*.2f*direction), transform.rotation) as GameObject;
-			projectile = recentBullet.GetComponent<Projectile>();
-			projectile.Init(facingRight, "Player");
+			shootProjectile("Player");
 			isReloading  = true;
 		}
 
@@ -156,7 +140,7 @@ public class CCharacterController : MonoBehaviour
 	void OnCollisionEnter2D(Collision2D other)
 	{
 		Debug.Log(other.gameObject.name);
-		if (other.gameObject.name != "Projectile(Clone)" && other.gameObject.name != "Enemy") 
+		if (other.gameObject.name != "Projectile(Clone)" && other.gameObject.name != "Enemy" && other.gameObject.name != "HealthUp") 
 		{
 			collisionCount++;
 		}
@@ -241,35 +225,10 @@ public class CCharacterController : MonoBehaviour
 	{
 		upDirection = -1;
 		collisionCount = 0;
+		health = 6;
 		isJumping = false;
 		isGrounded = false;
 		isFinished = false;
 		Flip ();
-	}
-
-	void Flip()
-	{
-		if (sideDirection < 0) 
-		{
-			direction = -1;
-		} 
-		else if (sideDirection >0) 
-		{
-			direction = 1;
-		}
-		if (sideDirection < 0 && facingRight == true) 
-		{
-			facingRight = !facingRight;
-			transform.Rotate(new Vector3(0, 1, 0), -180);
-		} 
-		else if (sideDirection >0 && facingRight == false)
-		{
-			facingRight = true;
-			transform.Rotate(new Vector3(0, 1, 0),  180);
-		}
-		if (sideDirection <0 && !facingRight && !isKnockedBack)
-		{
-			sideDirection *= -1;
-		}		
 	}
 }
